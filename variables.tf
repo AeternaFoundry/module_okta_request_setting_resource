@@ -36,5 +36,13 @@ EOT
       })))
     })))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.request_setting_resources : (
+        v.risk_settings == null || alltrue([for item in v.risk_settings : (item.default_setting == null || alltrue([for item in item.default_setting : (item.access_duration_settings == null || alltrue([for item in item.access_duration_settings : (item.type == null || (contains(["ADMIN_FIXED_DURATION", "REQUESTER_SPECIFIED_DURATION"], item.type)))]))]))])
+      )
+    ])
+    error_message = "must be one of: \"ADMIN_FIXED_DURATION\", \"REQUESTER_SPECIFIED_DURATION\""
+  }
 }
 
